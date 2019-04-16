@@ -1,0 +1,2042 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>国家电网苏通GTL管廊运输、施工车辆防碰撞系统</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.8.3.min.js" charset="utf-8"></script>
+<script src="layui-v2.2.6/layui-v2.2.6/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<!--滚动公告-->
+<script type="text/javascript" src="js/jquery.sgallery.js"></script>
+<!--显示当前时间-->
+<script type="text/javascript">  
+var days=new  Array ("日", "一", "二", "三", "四", "五", "六");  
+function showDT() {  
+  var currentDT = new Date();  
+  var y,m,date,day,hs,ms,ss,theDateStr;  
+  y = currentDT.getFullYear(); //四位整数表示的年份  
+  m = currentDT.getMonth()+1; //月  
+  date = currentDT.getDate(); //日  
+  day = currentDT.getDay(); //星期  
+  hs = "0"+currentDT.getHours(); //时  
+  ms = "0"+currentDT.getMinutes(); //分  
+  ss = "0"+currentDT.getSeconds(); //秒  
+  theDateStr = y+"年"+  m +"月"+date+"日<br><span>"+hs.slice(-2)+":"+ms.slice(-2)+":"+ss.slice(-2)+"</span>";  
+  document.getElementById("theClock"). innerHTML =theDateStr;  
+  // setTimeout 在执行时,是在载入后延迟指定时间后,去执行一次表达式,仅执行一次  
+  window.setTimeout( showDT, 1000);  
+}  
+</script>  
+</head>
+<body onload="showDT()">
+<div class="header">
+	<div class="logo">
+		<img src="images/index_03.png" />
+	</div>
+	
+	<div class="menu">
+		<ul>
+			<li><a href="javascript:quanxian(0)" class="a1">实时监控 </a></li>
+		    <li><a href="javascript:quanxian(1)" class="a2hover">历史运行记录 </a></li>
+		    <li><a href="javascript:quanxian(2)" class="a3">短信信息记录 </a></li>
+		    <li><a href="javascript:quanxian(3)" class="a4">系统配置 </a></li>
+		    <li><a href="javascript:quanxian(4)" class="a5">资源调度</a></li>
+		</ul>
+	</div>
+	
+	<div class="nav" id="theClock">
+	
+	</div>
+</div>
+
+<div class="main">
+	<div class="index_left">
+        <canvas id="myCanvas" width="2672" height="1560" class="scene"></canvas>
+		
+		<div class="left_txt">
+			<dl class="legend">
+				<dt>主隧道显示图</dt>
+				
+				<dd><b>UWB指示</b> <span></span></dd>
+				<dd><b>GPRS指示</b> <span></span></dd>
+			</dl>
+			
+			<div class="gonggao">
+    <div class="announ"> 
+		<b></b>
+      <div id="announ_list" class="announ_list">
+        <ul style="margin-top: 0px;">
+        
+		<li>回放过程中</li>
+        <li>可点击右侧车辆查看具体信息</li>
+		<li>回访结束后可在右下角返回记录列表</li>
+                        
+      </ul>
+      </div>
+    </div>
+    <!--公告-->
+    <script type="text/javascript">
+	$(function(){
+		startmarquee('announ_list',87,1,500,3000);
+	})
+	</script>
+</div>
+			
+		</div>
+	</div>
+	
+	<div class="index_right">
+		<div class="nTab">
+			<!-- 标题开始 -->
+			<div class="TabTitle">
+			  <div class="line"></div>
+			  <ul id="myTab1">
+				<li class="active" onClick="nTabs(this,0);">当前车辆</li>
+				<li class="normal" onClick="nTabs(this,1);">当前人员</li>
+			  </ul>
+			</div>
+			<!-- 内容开始 -->
+			<div class="TabContent">
+			  <div id="myTab1_Content0" style="display: block;">
+				<div class="car_list">
+					<h1>当前有<span id="carnumber"></span>辆车正在运行</h1>
+					<ul>
+						<li>
+							<img id="car1" src="images/index_24.png"/>
+							<span>1号</span>
+						</li>
+						
+						<li>
+							<img id="car2" src="images/index_24.png" />
+							<span>2号</span>
+						</li>
+						
+						<li>
+							<img id="car3" src="images/index_24.png" />
+							<span>3号</span>
+						</li>
+						
+						<li>
+							<img id="car4" src="images/index_24.png" />
+							<span>4号</span>
+						</li>
+						
+						<li>
+							<img id="car5" src="images/index_24.png" />
+							<span>5号</span>
+						</li>
+						
+						<li>
+							<img id="car6" src="images/index_24.png" />
+							<span>6号</span>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="texts">
+					<h1>车辆信息</h1>
+					<h2 id="whichcar"></h2>
+                    <p><span>出发时间：</span><span style="color:#FFF;" id="starttime"></span><i>重量：</i><span style="color:#FFF;">2吨</span></p>
+                    <p><span>当前时间：</span><span style="color:#FFF;" id="nowtime"></span><i>厂家：</i><span style="color:#FFF;">红旗</span></p>
+				</div>
+				
+				<div id="s" class="nav_btn1">
+					
+				</div>
+				
+				<div class="nav_btn_list">
+					<ul>
+						<li><em>车速：</em> <u><span id="sudu"></span> km/h</u></li>
+					    <li><em>油量：</em> <u><span id="youliang"></span> %	</u></li>
+					    <li><em>前车距：</em> <u><span id="qcheju"></span> 米</u></li>
+					    <li><em>后车距：</em> <u><span id="hcheju"></span> 米</u></li>
+					</ul>
+				</div>
+				
+				<div class="status_list">
+					<ul>
+						<li>当前运行状态：</li>
+                        <li id="running"><i class="run"></i>运行中</li>
+					    <li id="stopping" style="display:none;"><i class="stop"></i>停止</li>
+					</ul>
+				</div>
+				
+				<div class="nav_btn_list2">
+					<input id="down" style="width:500px"name="" type="button" value="正在进行回放" class="btn1" disabled/>
+					<input id="over" style="display:none;width:500px" type="button" value="点击返回记录列表" class="btn2" onclick="back();"/>
+				</div>
+				
+			  </div>
+			  
+			  
+			  <div id="myTab1_Content1" class="none" style="display:none;">
+                  <div class="car_list">
+					<h1>当前有<span>5</span>个人</h1>
+					<ul>
+						<li>
+							<img id="people1" src="images/man.png" />
+							<span>1号</span>
+						</li>
+						
+						<li>
+							<img id="people2" src="images/man.png" />
+							<span>2号</span>
+						</li>
+						
+						<li>
+							<img id="people3" src="images/man.png" />
+							<span>3号</span>
+						</li>
+						
+						<li>
+							<img id="people4" src="images/man.png" />
+							<span>4号</span>
+						</li>
+						
+						<li>
+							<img id="people5" src="images/man.png" />
+							<span>5号</span>
+						</li>
+					</ul>
+				</div>
+				
+				<div class="texts">
+					<h1>人员信息</h1>
+					<h2 id="whichpeople"></h2>
+				</div>
+				
+				<div class="nav_btn_list">
+					<ul>
+						<li><em>姓名：</em> <u><i id="name"></i></u></li>
+					    <li><em>职位：</em> <u><i id="office"></i></u></li>
+					    <li class="num"><em>编号：</em> <u><i id="pnumber"></i></u></li>
+					</ul>
+				</div>
+				
+				<div class="nav_btn2">
+					进入时间：<span id="ptime"></span>
+				</div>
+				
+				<div class="status_list">
+					<ul>
+						<li>当前运行状态：</li>
+					    <li><i class="run"></i>运行中</li>
+					    <li><i class="stop"></i>停止</li>
+					</ul>
+				</div>
+				
+				<div class="nav_btn_list2">
+                    <input id="down1" name="" type="button" value="回放进行中" class="btn3"/>
+                    <input id="over1" name="" type="button" value="点击返回记录列表" class="btn3"/>
+				</div>
+			  </div>
+			  
+			</div>
+	  </div>
+		<!--TAB切换-->
+		<script type="text/javascript" src="js/ntab.js"></script>
+	</div>
+	
+</div>
+<audio id="bgMusic" style="display:none;" src="ALARM3.WAV" controls="none">
+</audio>    
+<script>   
+layui.use('layer', function(){    
+             var layer = layui.layer;
+        })    
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var image = new Image();//用于储存车辆图片
+var image1 = new Image();//用于储存车辆图片
+var image2 = new Image();//用于储存车辆图片
+var image3 = new Image();//用于储存车辆图片 
+var image4 = new Image();//用于储存车辆图片
+var image5 = new Image();//用于储存车辆图片        
+var imagea = new Image();//用于储存人员图片
+imagea.src = "images/index_41.png"    
+var mjson={};    //定义锚点json 
+var allpeople = [1700,2000,400,600,1200] //人员位置 
+var car = {}//用于获取车辆具体信息
+var allcar = {}//全部历史纪录
+var count = 1;
+var count2 = 1;
+var count3 = 1;
+var count4 = 1;
+var count5 = 1;
+var count6 = 1;//用于计数
+var initcar = 0;
+var maxlength = 0;//用于判断回放是否结束
+var maxkey;//用于判断回放是否结束
+$.ajax({
+        url:"http://localhost/tp5/public/index.php/index/index/d",
+        type:"post",
+        dataType: "json",
+        success: function(data,status){//如果调用php成功   
+            mjson = data;
+            drawpeople(mjson);
+        }
+    });
+    $.ajax({
+        url:"http://localhost/tp5/public/index.php/index/getinfo/q_history",
+        type:"post",
+        dataType: "json",
+        success: function(data,status){//如果调用php成功   
+            allcar = data;
+            //alert(allcar["5"][1]["starttime"]);
+            //drawpeople(mjson);
+            $.ajax({
+                url:"http://localhost/tp5/public/index.php/index/getinfo/q_history1",
+                type:"post",
+                dataType: "json",
+                success: function(data,status){//如果调用php成功   
+                    init(data);
+                    initcar = 1;
+                    //alert(allcar["5"][0]["state"]);
+                    //drawpeople(mjson);
+                }
+            }); 
+        }
+    });
+             
+//清除画布    
+function clearCanvas()
+{
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+    /*
+canvas.onmousedown = function () {
+    var olotx = getLocation(event.clientX,event.clientY).x;
+    var oloty = getLocation(event.clientX,event.clientY).y;
+    alert(olotx+","+oloty);         
+};*/
+//获取画布当前位置
+function getLocation(x, y){
+    var bbox = canvas.getBoundingClientRect();
+    return{
+        x: (x - bbox.left) * (canvas.width / bbox.width),
+        y: (y - bbox.top) * (canvas.height / bbox.height)
+				
+				/*
+				 * 此处不用下面两行是为了防止使用CSS和JS改变了canvas的高宽之后是表面积拉大而实际
+				 * 显示像素不变而造成的坐标获取不准的情况
+				x: (x - bbox.left),
+				y: (y - bbox.top)
+				*/
+        };
+}    
+
+//初始化count
+function init(data)
+{
+    //var starttime = allcar[data][1]["starttime"];
+    carid = data;
+    for(var key in allcar)
+    {
+        if(allcar[key].length>1)
+        {
+            var starttime = allcar[key][1]["starttime"] 
+            for(var key1 in allcar)
+            {
+                if(allcar[key1].length>1)
+                {
+                    if(starttime < allcar[key1][1]["starttime"])
+                    {
+                        starttime = allcar[key1][1]["starttime"];
+                    }
+                    else
+                    {
+                        starttime = starttime; 
+                    }
+                }
+            }
+        }
+    }
+    //var endtime = allcar[key][1]["endtime"];
+    for(var key in allcar)
+    {
+        if(key == "5")
+        {
+            var length = counti(allcar[key]);
+            for(var i=0;i<allcar[key].length;i++)
+            {
+                if(starttime == allcar[key][i]["starttime"])
+                {
+                    count = i+1;
+                }
+            }
+        }
+        else if(key == "4")
+        {
+            var length2 = counti(allcar[key]);
+            for(var i=0;i<allcar[key].length;i++)
+            {
+                if(starttime == allcar[key][i]["starttime"])
+                {
+                    count2 = i+1;
+                }
+            }
+        }
+        else if(key == "3")
+        {
+            var length3 = counti(allcar[key]);
+            for(var i=0;i<allcar[key].length;i++)
+            {
+                //alert(starttime);
+                //alert(allcar[key][i]["starttime"]);
+                if(starttime == allcar[key][i]["starttime"])
+                {
+                    count3 = i+1;
+                }
+            }
+        }
+        else if(key == "2")
+        {
+            //alert(allcar[key].length);
+            var length4 = counti(allcar[key]);
+            for(var i=0;i<allcar[key].length;i++)
+            {
+                if(starttime == allcar[key][i]["starttime"])
+                {
+                    count4 = i+1;
+                }
+            }
+        }
+        else if(key == "1")
+        {
+            var length5 = counti(allcar[key]);
+            //alert(allcar[key].length);
+            for(var i=0;i<allcar[key].length;i++)
+            {
+                if(starttime == allcar[key][i]["starttime"])
+                {
+                    count5 = i+1;
+                }
+            }
+        }
+        else if(key == "0")
+        {
+            var length6 = counti(allcar[key]);
+            //alert(allcar[key].length);
+            for(var i=0;i<allcar[key].length;i++)
+            {
+                if(starttime == allcar[key][i]["starttime"])
+                {
+                    count6 = i+1;
+                }
+            }
+        }
+    }
+    for(var key in allcar)
+    {
+        if(maxlength<allcar[key].length)
+        {
+            maxlength = allcar[key].length;
+            maxkey = key;
+        }
+    }
+    //alert(count+" "+count2+" "+count3+" "+count4+" "+count5+" "+count6);
+}
+
+
+//定时器    
+var timeer1;
+$(document).ready(function () {
+    timeer1 =  setInterval("GetStatus()",100);
+    //timeer2 =  setInterval("GetStatus1()",100);
+});     
+function counti(json){
+                var jsonLength=0;
+                for (var i in json) {
+                    jsonLength++;
+                }
+                return jsonLength; }  
+function GetStatus(){
+    if(mjson)
+    {
+        if(allcar)
+        {
+            if(initcar == 1)
+            {
+            clearInterval(timeer1);
+            var str = JSON.stringify(allcar);
+            car = JSON.parse(str);
+            //alert(JSON.stringify(car));
+            for(var key in car)
+            {
+                if(key == "5")
+                {
+                    var length = counti(allcar[key]);
+                    //alert(length);
+                    if(count<length)
+                    {
+                        car[key].length = count;
+                        //alert(car[key].length);
+                    }    
+                }
+                if(key == "4")
+                {
+                    var length = counti(allcar[key]);
+                    if(count2<length)
+                    {
+                        car[key].length = count2;
+                    }    
+                }  
+                if(key == "3")
+                {
+                    var length = counti(allcar[key]);
+                    if(count3<length)
+                    {
+                        car[key].length = count3;
+                    }    
+                }  
+                if(key == "2")
+                {
+                    var length = counti(allcar[key]);
+                    if(count4<length)
+                    {
+                        car[key].length = count4;
+                    }    
+                }  
+                if(key == "1")
+                {
+                    var length = counti(allcar[key]);
+                    if(count5<length)
+                    {
+                        car[key].length = count5;
+                    }    
+                }  
+                if(key == "0")
+                {
+                    var length = counti(allcar[key]);
+                    if(count6<length)
+                    {
+                        car[key].length = count6;
+                    }    
+                }  
+            }
+            for(var key in car)
+            {
+                if(key == "5")
+                {
+                    if(car[key][car[key].length-1]["state"] == true)
+                    {
+                        count++;
+                    }
+                }
+                if(key == "4")
+                {
+                    if(car[key][car[key].length-1]["state"] == true)
+                    {
+                        count2++;
+                    }
+                }
+                if(key == "3")
+                {
+                    if(car[key][car[key].length-1]["state"] == true)
+                    {
+                        count3++;
+                    }
+                }
+                if(key == "2")
+                {
+                    if(car[key][car[key].length-1]["state"] == true)
+                    {
+                        count4++;
+                    }
+                }
+                if(key == "1")
+                {
+                    if(car[key][car[key].length-1]["state"] == true)
+                    {
+                        count5++;
+                    }
+                }
+                if(key == "0")
+                {
+                    if(car[key][car[key].length-1]["state"] == true)
+                    {
+                        count6++;
+                    }
+                }
+            }
+            //alert(count+" "+count2+" "+count3+" "+count4+" "+count5+" "+count6);
+            //alert(JSON.stringify(car));
+            //alert(car["5"][0]["state"]);
+            if(car[maxkey].length<maxlength)
+            {
+                peopleaction();
+                showcar(car);
+            }
+            else
+            {
+                $("#down").hide();
+                $("#over").show();
+                $("#down1").hide();
+                $("#over1").show();
+                $("#scroll1").html("回放已经结束");
+                $("#scroll2").html("右下角可以返回上一层");
+                $("#scroll3").html("回放已经结束");
+                //alert("回放已经结束");
+            }
+            //alert(count);
+            }
+        }
+        //j++;     
+    }
+} 
+    
+//画人员    
+function drawpeople(mjson)
+{
+    for(var i=0;i<allpeople.length;i++)
+    {   
+        var sx = allpeople[i];
+        for(var j=0;j<mjson["up"].length;j++)
+        {   
+            if(j == mjson["up"].length-1)
+            {   
+                break;
+            }
+            if(sx>=mjson["up"][j]["locationx"]&&sx<mjson["up"][j+1]["locationx"])
+            {   
+                if(j == mjson["up"].length-1)
+                {   
+                    break;
+                }
+                if(mjson["up"][j+1]["locationy"]-mjson["up"][j]["locationy"]>0)
+                {   
+                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                    q = Math.abs(mjson["up"][j+1]["locationx"]-mjson["up"][j]["locationx"])/Math.abs((mjson["up"][j+1]["locationy"]+mjson["down"][j+1]["locationy"])/2-(mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2);
+                    sy = Math.abs(sx-mjson["up"][j]["locationx"])/q+(mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2;
+                    ctx.drawImage(imagea, sx-30, sy-25);
+                    ctx.font = "bold 50px \"微软雅黑\"";
+                    ctx.fillStyle = "#fff";
+                    ctx.fillText((i+1)+"号",sx-40,sy-60);
+                    break;
+                }
+                else if(mjson["up"][j+1]["locationy"]-mjson["up"][j]["locationy"]<0)
+                {   
+                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                    q = Math.abs(mjson["up"][j+1]["locationx"]-mjson["up"][j]["locationx"])/Math.abs((mjson["up"][j+1]["locationy"]+mjson["down"][j+1]["locationy"])/2-(mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2);
+                    sy = (mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2-Math.abs(sx-mjson["up"][j]["locationx"])/q;
+                    ctx.drawImage(imagea, sx-30, sy-25);
+                    ctx.font = "bold 50px \"微软雅黑\"";
+                    ctx.fillStyle = "#fff";
+                    ctx.fillText((i+1)+"号",sx-40,sy-60);
+                    break;
+                }
+                else if(mjson["up"][j+1]["locationy"]-mjson["up"][j]["locationy"]==0)
+                {   
+                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                    sy = (mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2;
+                    ctx.drawImage(imagea, sx-30, sy-25);
+                    ctx.font = "bold 50px \"微软雅黑\"";
+                    ctx.fillStyle = "#fff";
+                    ctx.fillText((i+1)+"号",sx-40,sy-60);
+                    break;
+                }
+            }
+        }
+    }
+} 
+//画小车
+function showcar(data)
+{   
+    var sx = 0;
+    clearCanvas();
+    drawpeople(mjson);
+    //判断警报 车车碰撞
+    var judge = 0;
+    for(var key in data)
+    {    
+        if(data[key][data[key].length-1]["state"] == true)
+        {
+            for(var key1 in data)
+            {   
+                if(key == key1)
+                {   
+                    continue;
+                }
+                else
+                {    
+                    if(data[key1][data[key1].length-1]["state"] == true)
+                    {    
+                        //alert(key+"%"+key1);
+                        var warning = Math.abs(data[key][data[key].length-1]["s"] - data[key1][data[key1].length-1]["s"]);
+                        if(warning>20&&warning<120)
+                        {   
+                            //alert(key+"%"+key1);
+                            var audio = document.getElementById("bgMusic");
+                            //audio.currentTime = 0;
+                            //audio.play();
+                            judge=1;
+                            data[key][data[key].length-1]["warning"] = "warning";
+                            data[key1][data[key1].length-1]["warning"] = "warning";
+                            //changecolor(key);
+                            //changecolor(key1);
+                        }
+                        else if(warning<=20)
+                        {   
+                            var audio = document.getElementById("bgMusic");
+                            audio.currentTime = 0;
+                            audio.play();
+                            judge=1;
+                            data[key][data[key].length-1]["warning"] = true;
+                            data[key1][data[key1].length-1]["warning"] = true;
+                            //changecolor(key);
+                            //changecolor(key1);
+                        }
+                        else
+                        {  
+                            //changecolor(key);
+                            //changecolor(key1);
+                            if((data[key][data[key].length-1]["warning"]=="warning"&&data[key1][data[key1].length-1]["warning"]=="warning")||(data[key][data[key].length-1]["warning"]==true&&data[key1][data[key1].length-1]["warning"]==true))
+                            {   
+                                break;
+                            }
+                            if(judge == 1)
+                            {
+
+                            }
+                            else
+                            {
+                                var audio = document.getElementById("bgMusic");
+                                audio.pause();
+                                audio.currentTime = 0;
+                            } 
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    //判断警报 车人碰撞
+    for(var key in data)
+    {    
+        if(data[key][data[key].length-1]["state"] == true)
+        {
+            for(var i=0;i<allpeople.length;i++)
+            {   
+                if(Math.abs(data[key][data[key].length-1]["s"]-allpeople[i])<=20)
+                {   
+                    data[key][data[key].length-1]["warning"] = "warning";
+                    //changecolor(key);
+                }
+            }
+        }
+    }
+    
+    //画小车
+    for(var key in data)
+    {   
+        if(data[key][data[key].length-1]["state"] == true)
+        {   
+            if(data[key][data[key].length-1]["s"] >2672)
+            {   
+                //alert(JSON.stringify(data));
+                 $.ajax({
+                    url:"http://localhost/tp5/public/index.php/index/abb/maxcar",
+                    type:"post",
+                    dataType: "json",
+                    data:{"key":key},
+                    success: function(data,status){//如果调用php成功   
+                    }
+                })
+            }
+            if(key == "5")
+            {   
+                sx = data[key][data[key].length-1]["s"];
+                for(var i=0;i<mjson["up"].length;i++)
+                {
+            
+                    if(i == mjson["up"].length-1)
+                    {   
+                        break;
+                    }
+                    if(sx>=mjson["up"][i]["locationx"]&&sx<mjson["up"][i+1]["locationx"])
+                    {   
+                        if(i == mjson["up"].length-1)
+                        {   
+                            break;
+                        }
+                        if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]>0)
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = Math.abs(sx-mjson["up"][i]["locationx"])/q+(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image = new Image();
+                                image.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image = new Image();
+                                //ctx.scale(2,2);
+                                image.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image = new Image();
+                                //ctx.scale(2,2);
+                                image.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]<0)                            
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2-Math.abs(sx-mjson["up"][i]["locationx"])/q;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image = new Image();
+                                image.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image = new Image();
+                                //ctx.scale(2,2);
+                                image.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image = new Image();
+                                //ctx.scale(2,2);
+                                image.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]==0)
+                        {   
+                            //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image = new Image();
+                                image.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image = new Image();
+                                //ctx.scale(2,2);
+                                image.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image = new Image();
+                                //ctx.scale(2,2);
+                                image.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("一号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            if(key == "4")
+            {   
+                sx = data[key][data[key].length-1]["s"];
+                for(var i=0;i<mjson["up"].length;i++)
+                {
+            
+                    if(i == mjson["up"].length-1)
+                    {   
+                        break;
+                    }
+                    if(sx>=mjson["up"][i]["locationx"]&&sx<mjson["up"][i+1]["locationx"])
+                    {   
+                        if(i == mjson["up"].length-1)
+                        {   
+                            break;
+                        }
+                        if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]>0)
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = Math.abs(sx-mjson["up"][i]["locationx"])/q+(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image1 = new Image();
+                                image1.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image1 = new Image();
+                                //ctx.scale(2,2);
+                                image1.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image1 = new Image();
+                                //ctx.scale(2,2);
+                                image1.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]<0)                            
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2-Math.abs(sx-mjson["up"][i]["locationx"])/q;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image1 = new Image();
+                                image1.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image1 = new Image();
+                                //ctx.scale(2,2);
+                                image1.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image1 = new Image();
+                                //ctx.scale(2,2);
+                                image1.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]==0)
+                        {   
+                            //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image1 = new Image();
+                                image1.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image1 = new Image();
+                                //ctx.scale(2,2);
+                                image1.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image1 = new Image();
+                                //ctx.scale(2,2);
+                                image1.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image1, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("二号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            if(key == "3")
+            {   
+                sx = data[key][data[key].length-1]["s"];
+                for(var i=0;i<mjson["up"].length;i++)
+                {
+            
+                    if(i == mjson["up"].length-1)
+                    {   
+                        break;
+                    }
+                    if(sx>=mjson["up"][i]["locationx"]&&sx<mjson["up"][i+1]["locationx"])
+                    {   
+                        if(i == mjson["up"].length-1)
+                        {   
+                            break;
+                        }
+                        if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]>0)
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = Math.abs(sx-mjson["up"][i]["locationx"])/q+(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image2 = new Image();
+                                image2.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25); 
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image2 = new Image();
+                                //ctx.scale(2,2);
+                                image2.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image2 = new Image();
+                                //ctx.scale(2,2);
+                                image2.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]<0)                            
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2-Math.abs(sx-mjson["up"][i]["locationx"])/q;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image2 = new Image();
+                                image2.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image2 = new Image();
+                                //ctx.scale(2,2);
+                                image2.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image2 = new Image();
+                                //ctx.scale(2,2);
+                                image2.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]==0)
+                        {   
+                            //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image2 = new Image();
+                                image2.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image2 = new Image();
+                                //ctx.scale(2,2);
+                                image2.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image2 = new Image();
+                                //ctx.scale(2,2);
+                                image2.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image2, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("三号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            if(key == "2")
+            {   
+                sx = data[key][data[key].length-1]["s"];
+                for(var i=0;i<mjson["up"].length;i++)
+                {
+            
+                    if(i == mjson["up"].length-1)
+                    {   
+                        break;
+                    }
+                    if(sx>=mjson["up"][i]["locationx"]&&sx<mjson["up"][i+1]["locationx"])
+                    {   
+                        if(i == mjson["up"].length-1)
+                        {   
+                            break;
+                        }
+                        if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]>0)
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = Math.abs(sx-mjson["up"][i]["locationx"])/q+(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image3 = new Image();
+                                image3.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25); 
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image3 = new Image();
+                                //ctx.scale(2,2);
+                                image3.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image3 = new Image();
+                                //ctx.scale(2,2);
+                                image3.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]<0)                            
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2-Math.abs(sx-mjson["up"][i]["locationx"])/q;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image3 = new Image();
+                                image3.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image3 = new Image();
+                                //ctx.scale(2,2);
+                                image3.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image3 = new Image();
+                                //ctx.scale(2,2);
+                                image3.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]==0)
+                        {   
+                            //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image3 = new Image();
+                                image3.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image3 = new Image();
+                                //ctx.scale(2,2);
+                                image3.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image3 = new Image();
+                                //ctx.scale(2,2);
+                                image3.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image3, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("四号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            if(key == "1")
+            {   
+                sx = data[key][data[key].length-1]["s"];
+                for(var i=0;i<mjson["up"].length;i++)
+                {
+            
+                    if(i == mjson["up"].length-1)
+                    {   
+                        break;
+                    }
+                    if(sx>=mjson["up"][i]["locationx"]&&sx<mjson["up"][i+1]["locationx"])
+                    {   
+                        if(i == mjson["up"].length-1)
+                        {   
+                            break;
+                        }
+                        if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]>0)
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = Math.abs(sx-mjson["up"][i]["locationx"])/q+(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image4 = new Image();
+                                image4.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25); 
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image4 = new Image();
+                                //ctx.scale(2,2);
+                                image4.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image4 = new Image();
+                                //ctx.scale(2,2);
+                                image4.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]<0)                            
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2-Math.abs(sx-mjson["up"][i]["locationx"])/q;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image4 = new Image();
+                                image4.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image4 = new Image();
+                                //ctx.scale(2,2);
+                                image4.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image4 = new Image();
+                                //ctx.scale(2,2);
+                                image4.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]==0)
+                        {   
+                            //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image4 = new Image();
+                                image4.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image4 = new Image();
+                                //ctx.scale(2,2);
+                                image4.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image4 = new Image();
+                                //ctx.scale(2,2);
+                                image4.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image4, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("五号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            if(key == "0")
+            {   
+                sx = data[key][data[key].length-1]["s"];
+                for(var i=0;i<mjson["up"].length;i++)
+                {
+            
+                    if(i == mjson["up"].length-1)
+                    {   
+                        break;
+                    }
+                    if(sx>=mjson["up"][i]["locationx"]&&sx<mjson["up"][i+1]["locationx"])
+                    {   
+                        if(i == mjson["up"].length-1)
+                        {   
+                            break;
+                        }
+                        if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]>0)
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = Math.abs(sx-mjson["up"][i]["locationx"])/q+(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image5 = new Image();
+                                image5.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25); 
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image5 = new Image();
+                                //ctx.scale(2,2);
+                                image5.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image5 = new Image();
+                                //ctx.scale(2,2);
+                                image5.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]<0)                            
+                        {   
+                                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2-Math.abs(sx-mjson["up"][i]["locationx"])/q;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image5 = new Image();
+                                image5.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image5 = new Image();
+                                //ctx.scale(2,2);
+                                image5.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image5 = new Image();
+                                //ctx.scale(2,2);
+                                image5.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                        else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]==0)
+                        {   
+                            //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                            sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                            if(data[key][data[key].length-1]["warning"] == true)
+                            {   
+                                image5 = new Image();
+                                image5.src="images/index_39.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            else if(data[key][data[key].length-1]["warning"] == "warning")
+                            {
+                                image5 = new Image();
+                                //ctx.scale(2,2);
+                                image5.src="images/index_36.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            else
+                            {   
+                                image5 = new Image();
+                                //ctx.scale(2,2);
+                                image5.src="images/index_37.png";
+                                //ctx.rotate(45);
+                                ctx.drawImage(image5, sx-50, sy-25);
+                                ctx.font = "bold 50px \"微软雅黑\"";
+                                ctx.fillStyle = "#fff";
+                                ctx.fillText("六号车",sx-60,sy-60);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }            
+        }
+    }
+    refresh();
+    //count++;
+    timeer1 =  setInterval("GetStatus()",100);
+}
+
+var carid; //用聚焦某辆车 
+var peopleid = 1;
+refresh1();   
+//获取车辆当前信息
+canvas.onmousedown = function (){
+    var olotx = getLocation(event.clientX,event.clientY).x;
+    var oloty = getLocation(event.clientX,event.clientY).y;
+    for(var key in car)
+    {   
+        //alert(car["5"].length);
+        if(car[key][car[key].length-1]["state"] == true)
+        {   
+            sx = car[key][car[key].length-1]["s"];
+            for(var i=0;i<mjson["up"].length;i++)
+            {            
+                if(i == mjson["up"].length-1)
+                {   
+                    break;
+                }
+                if(sx>=mjson["up"][i]["locationx"]&&sx<mjson["up"][i+1]["locationx"])
+                {   
+                    if(i == mjson["up"].length-1)
+                    {   
+                        break;
+                    }
+                    if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]>0)
+                    {   
+                        //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                        q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                        sy = Math.abs(sx-mjson["up"][i]["locationx"])/q+(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                        break;
+                    }
+                    else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]<0)
+                    {   
+                        //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                        q = Math.abs(mjson["up"][i+1]["locationx"]-mjson["up"][i]["locationx"])/Math.abs((mjson["up"][i+1]["locationy"]+mjson["down"][i+1]["locationy"])/2-(mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2);
+                        sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2-Math.abs(sx-mjson["up"][i]["locationx"])/q;
+                        break;
+                    }
+                    else if(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]==0)
+                    {   
+                        //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                        sy = (mjson["up"][i]["locationy"]+mjson["down"][i]["locationy"])/2;
+                        break;
+                    }
+                }
+            }
+            if(Math.abs(olotx-sx)<20&&Math.abs(oloty-sy)<20)
+            {   
+                carid = key;
+                refresh();
+                
+                //$("#state").html(Math.trunc(car[key][car[key][car[key].length-1]["state"]));
+                
+            }
+        }    
+    }
+    for(var i=0;i<allpeople.length;i++)
+    {   
+        var sx = allpeople[i];
+        for(var j=0;j<mjson["up"].length;j++)
+        {   
+            if(j == mjson["up"].length-1)
+            {   
+                break;
+            }
+            if(sx>=mjson["up"][j]["locationx"]&&sx<mjson["up"][j+1]["locationx"])
+            {   
+                if(j == mjson["up"].length-1)
+                {   
+                    break;
+                }
+                if(mjson["up"][j+1]["locationy"]-mjson["up"][j]["locationy"]>0)
+                {   
+                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                    q = Math.abs(mjson["up"][j+1]["locationx"]-mjson["up"][j]["locationx"])/Math.abs((mjson["up"][j+1]["locationy"]+mjson["down"][j+1]["locationy"])/2-(mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2);
+                    sy = Math.abs(sx-mjson["up"][j]["locationx"])/q+(mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2;
+                    break;
+                }
+                else if(mjson["up"][j+1]["locationy"]-mjson["up"][j]["locationy"]<0)
+                {   
+                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                    q = Math.abs(mjson["up"][j+1]["locationx"]-mjson["up"][j]["locationx"])/Math.abs((mjson["up"][j+1]["locationy"]+mjson["down"][j+1]["locationy"])/2-(mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2);
+                    sy = (mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2-Math.abs(sx-mjson["up"][j]["locationx"])/q;
+                    break;
+                }
+                else if(mjson["up"][j+1]["locationy"]-mjson["up"][j]["locationy"]==0)
+                {   
+                    //alert(mjson["up"][i+1]["locationy"]-mjson["up"][i]["locationy"]);
+                    sy = (mjson["up"][j]["locationy"]+mjson["down"][j]["locationy"])/2;
+                    break;
+                }
+            }
+            if(Math.abs(olotx-(sx-10))<40&&Math.abs(oloty-sy)<180)
+            {   
+                peopleid = i+1;
+                refresh1();
+                //$("#state").html(Math.trunc(car[key][car[key][car[key].length-1]["state"])); 
+            }
+        }
+    }
+}; 
+//监控右侧车辆点击事件    
+$("#car1").click(function(){
+    carid = "5";
+    refresh();
+});
+$("#car2").click(function(){
+    carid = "4";
+    refresh();
+});
+$("#car3").click(function(){
+    carid = "3";
+    refresh();
+});
+$("#car4").click(function(){
+    carid = "2";
+    refresh();
+});
+$("#car5").click(function(){
+    carid = "1";
+    refresh();
+});
+$("#car6").click(function(){
+    carid = "0";
+    refresh();
+});    
+$("#people1").click(function(){
+    peopleid = 1;
+    refresh1();
+});
+$("#people2").click(function(){
+    peopleid = 2;
+    refresh1();
+});  
+$("#people3").click(function(){
+    peopleid = 3;
+    refresh1();
+});  
+$("#people4").click(function(){
+    peopleid = 4;
+    refresh1();
+});  
+$("#people5").click(function(){
+    peopleid = 5;
+    refresh1();
+});          
+//实时更新右侧车辆信息栏    
+function refresh()
+{   
+    var key = carid;
+    if(car[key][car[key].length-1]["state"] == true)
+    {    
+        for(var key1 in car)
+        {   
+            if(key == key1)
+            {   
+                continue;
+            }
+            else
+            {    
+                if(car[key1][car[key1].length-1]["state"] == true)
+                {    
+                    var cheju =  car[key][car[key].length-1]["s"]-car[key1][car[key1].length-1]["s"];
+                    if(cheju>=0)
+                    {   
+                        if(cheju<car[key][car[key].length-1]["hcheju"]||car[key][car[key].length-1]["hcheju"] == null)
+                        {
+                            car[key][car[key].length-1]["hcheju"] = cheju;
+                        }
+                    }
+                    else
+                    {  
+                        if(Math.abs(cheju)<car[key][car[key].length-1]["qcheju"]||car[key][car[key].length-1]["qcheju"] == null)
+                        {
+                            car[key][car[key].length-1]["qcheju"] = Math.abs(cheju);
+                        } 
+                    }
+                }
+            }
+        }
+    }
+    $("#sudu").html(Math.trunc(car[key][car[key].length-1]["v"]));
+    $("#youliang").html(Math.trunc(car[key][car[key].length-1]["youliang"]));
+    $("#qcheju").html(Math.trunc(car[key][car[key].length-1]["qcheju"]));
+    $("#hcheju").html(Math.trunc(car[key][car[key].length-1]["hcheju"]));
+    $("#s").html("距离南岸："+Math.trunc(car[key][car[key].length-1]["s"])+"m");
+    //let d = new Date(car[key][1]["start_time"] * 1000);
+    //alert(d);
+    if(car[key].length-1 == 0)
+    {   
+        $("#starttime").html(car[key][0]["starttime"]);
+        $("#nowtime").html(car[key][car[0].length-1]["starttime"]);
+    }
+    else
+    {   
+        $("#starttime").html(car[key][1]["starttime"]);
+        $("#nowtime").html(car[key][car[key].length-1]["starttime"]);
+    } 
+    if(key == "5")
+    {   
+        $("#whichcar").html("一号车");
+    }
+    else if(key == "4")
+    {   
+        $("#whichcar").html("二号车");
+    }
+    else if(key == "3")
+    {   
+        $("#whichcar").html("三号车");
+    }
+    else if(key == "2")
+    {   
+        $("#whichcar").html("四号车");
+    }
+    else if(key == "1")
+    {   
+        $("#whichcar").html("五号车");
+    }
+    else if(key == "0")
+    {   
+        $("#whichcar").html("六号车");
+    }
+    var count1 = 0;
+    for(var key1 in car)
+    {   
+        changecolor(key1);
+        if(car[key1][car[key1].length-1]["state"] == true)
+        {
+            count1++;
+        }
+    }
+    $("#carnumber").html(count1);
+}
+    
+//右侧栏车辆颜色变化    
+function changecolor(key)
+{   
+    if(car[key][car[key].length-1]["warning"] == "warning")
+    {   
+        if(key == "5")
+        {   
+            $("#car1").attr("src","images/index_26.png");
+        }
+        else if(key == "4")
+        {   
+            $("#car2").attr("src","images/index_26.png");
+        }
+        else if(key == "3")
+        {   
+            $("#car3").attr("src","images/index_26.png");
+        }
+        else if(key == "2")
+        {   
+            $("#car4").attr("src","images/index_26.png");
+        }    
+        else if(key == "1")
+        {   
+            $("#car5").attr("src","images/index_26.png");
+        }    
+        else if(key == "0")
+        {   
+            $("#car6").attr("src","images/index_26.png");
+        }    
+    }
+    else if(car[key][car[key].length-1]["warning"] == true)
+    {
+        if(key == "5")
+        {   
+            $("#car1").attr("src","images/index_25.png");
+        }
+        else if(key == "4")
+        {   
+            $("#car2").attr("src","images/index_25.png");
+        }
+        else if(key == "3")
+        {   
+            $("#car3").attr("src","images/index_25.png");
+        }
+        else if(key == "2")
+        {   
+            $("#car4").attr("src","images/index_25.png");
+        }    
+        else if(key == "1")
+        {   
+            $("#car5").attr("src","images/index_25.png");
+        }    
+        else if(key == "0")
+        {   
+            $("#car6").attr("src","images/index_25.png");
+        }    
+    }
+    else
+    {
+         if(key == "5")
+        {   
+            $("#car1").attr("src","images/index_24.png");
+        }
+        else if(key == "4")
+        {   
+            $("#car2").attr("src","images/index_24.png");
+        }
+        else if(key == "3")
+        {   
+            $("#car3").attr("src","images/index_24.png");
+        }
+        else if(key == "2")
+        {   
+            $("#car4").attr("src","images/index_24.png");
+        }    
+        else if(key == "1")
+        {   
+            $("#car5").attr("src","images/index_24.png");
+        }    
+        else if(key == "0")
+        {   
+            $("#car6").attr("src","images/index_24.png");
+        }    
+    }    
+}
+function peopleaction()
+{   
+    for(var i=0;i<allpeople.length;i++)
+    {   
+        var g = Math.round(Math.random());
+        if(g == 0)
+        {
+            var k = Math.round(Math.random());
+            if(k == 0)
+            {   
+                allpeople[i] = allpeople[i] + Math.ceil(Math.random()*10);    
+            }
+            else
+            {  
+                allpeople[i] = allpeople[i] - Math.ceil(Math.random()*10);
+            }
+        }
+        else
+        {   
+        
+        }
+    }
+} 
+function back()
+{
+    window.location.href="http://localhost/tp5/public/gil/history.html";
+}
+function refresh1()
+{
+    if(peopleid == 1)
+    {
+        $("#name").html("李林飞");
+        $("#whichpeople").html("一号人员");
+        $("#office").html("大老板");
+        $("#pnumber").html("12345678");
+        $("#ptime").html("2019年3月7日 11:20");
+    }
+    else if(peopleid == 2)
+    {
+        $("#name").html("邓瑞璠1");
+        $("#whichpeople").html("二号人员");
+        $("#office").html("铁憨憨");
+        $("#pnumber").html("12345673");
+        $("#ptime").html("2019年3月7日 11:20");
+    }
+    else if(peopleid == 3)
+    {
+        $("#name").html("邓瑞璠2");
+        $("#whichpeople").html("三号人员");
+        $("#office").html("铁憨憨");
+        $("#pnumber").html("12345672");
+        $("#ptime").html("2019年3月7日 11:20");
+    }
+    else if(peopleid == 4)
+    {
+        $("#name").html("邓瑞璠3");
+        $("#whichpeople").html("四号人员");
+        $("#office").html("铁憨憨");
+        $("#pnumber").html("12345671");
+        $("#ptime").html("2019年3月7日 11:20");
+    }
+    else if(peopleid == 5)
+    {
+        $("#name").html("邓瑞璠4");
+        $("#whichpeople").html("五号人员");
+        $("#office").html("铁憨憨");
+        $("#pnumber").html("12345632");
+        $("#ptime").html("2019年3月7日 11:20");
+    }
+}
+function quanxian(g)
+{
+    var member;
+    $.ajax({
+        url:"http://localhost/tp5/public/index.php/index/getinfo/a_auth",
+        type:"post",
+        dataType: "text",
+        success: function(data,status){//如果调用php成功   
+            member = data;
+            switch(member)
+            {
+                case "巡视人员":
+                    if(g==0)
+                    {
+                        window.location.href = "../gil/index.html";
+                    }
+                    else
+                    {
+                        layer.alert("权限不足",{skin:'layui-layer-molv',closeBtn:1},);
+                    }
+                    break;
+                case "管理维护人员":
+                    if(g==0)
+                    {
+                        window.location.href = "../gil/index.html";
+                    }
+                    else if(g==3)
+                    {
+                        window.location.href = "../gil/list.html";
+                    }
+                    else
+                    {
+                        layer.alert("权限不足",{skin:'layui-layer-molv',closeBtn:1},);
+                    }
+                    break;
+                case "数据处理人员":
+                    if(g==1)  
+                    {
+                        window.location.href = "../gil/history.html";
+                    }      
+                    else if(g==2)
+                    {
+                        window.location.href = "../gil/sms.html";
+                    }
+                    else if(g==3)
+                    {
+                        window.location.href = "../gil/list.html";
+                    }
+                    else
+                    {
+                        layer.alert("权限不足",{skin:'layui-layer-molv',closeBtn:1},);
+                    }
+                    break;
+                case "领导":
+                    if(g==0)
+                    {
+                        window.location.href = "../gil/index.html";
+                    }
+                    else if(g==1)  
+                    {
+                        window.location.href = "../gil/history.html";
+                    }      
+                    else if(g==2)
+                    {
+                        window.location.href = "../gil/sms.html";
+                    }
+                    else if(g==3)
+                    {
+                        window.location.href = "../gil/list.html";
+                    }
+                    else if(g==4)
+                    {
+                        window.location.href = "../gil/ziyuan.html";
+                    }
+                    else
+                    {
+                        layer.alert("权限不足",{skin:'layui-layer-molv',closeBtn:1},);
+                    }    
+                    break;
+                default:
+                    break;   
+            }
+        }
+    });    
+}
+</script>    
+</body>
+</html>

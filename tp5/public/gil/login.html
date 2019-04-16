@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+<meta http-equiv="Pragma" content="no-cache"> 
+<meta http-equiv="Cache-Control" content="no-cache"> 
+<meta http-equiv="Expires" content="0"> 
+<title>苏通GTL管廊运输、施工车辆防碰撞系统</title>
+<link href="login.css" rel="stylesheet" type="text/css" />
+<script src="layui-v2.2.6/layui-v2.2.6/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="js/jquery-1.8.3.min.js" charset="utf-8"></script>  
+</head>
+
+<body>
+<div class="login_box">
+      <div class="login_l_img"><img src="images/login-img.png" /></div>
+      <div class="login">
+          <div class="login_logo"><img src="images/login_logo.png" /></div>
+          <div class="login_name">
+               <p>苏通GIL管廊运输、施工车辆防碰撞系统</p>
+          </div>
+          <form id = "login">
+              <input name="account" id="account" type="text"  value="用户名" onfocus="this.value=''" onblur="if(this.value==''){this.value='用户名'}">
+              <span id="password_text" onclick="this.style.display='none';document.getElementById('password').style.display='block';" >密码</span>
+              <input name="password" type="password" id="password" style="display:none;" onblur="if(this.value==''){document.getElementById('password_text').style.display='block';this.style.display='none'};"/>
+              <select class="weihu" name="office" id="office">
+                <option id="weihu1" value="巡视人员">巡视人员</option>
+                <option id="weihu1" value="管理维护人员">管理维护人员</option>
+                <option id="weihu1" value="数据处理人员">数据处理人员</option>
+                <option id="weihu1" value="领导">领导</option>
+              </select>
+              <input value="登录" style="width:100%;" type="button" onclick="javascript:login()">
+
+          </form>
+      </div>
+      <div class="copyright">苏通有限公司 版权所有©2018-* 技术支持电话：000-00000000</div>
+</div>
+<script type="text/javascript">
+layui.use('layer', function(){    
+             var layer = layui.layer;
+        })
+function login(){
+  $.ajax({
+    type:"post",
+    url:"http://localhost/tp5/public/index.php/index/getinfo/login",
+    dateType:"text",
+    data:{"account":$("#account").val(),"password":$("#password").val(),"office":$("#office").val()},
+    success:function(data){
+      if(data == "巡视人员"){window.location.href="http://localhost/tp5/public/gil/index.html";}
+      if(data == "管理维护人员"){window.location.href="http://localhost/tp5/public/gil/index.html";}
+      if(data == "数据处理人员"){window.location.href="http://localhost/tp5/public/gil/history.html";}
+      if(data == "领导"){window.location.href="http://localhost/tp5/public/gil/index.html";}
+      else
+      {
+          layer.msg(data);
+      }
+    }
+  })
+}
+</script>
+</body>
+</html>

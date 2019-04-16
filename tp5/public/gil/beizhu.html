@@ -1,0 +1,299 @@
+<script type="text/javascript">
+	function counti(json){
+					var jsonLength=0;
+					for (var i in json) {
+							jsonLength++;
+					}
+					return jsonLength; }
+layui.use('layer', function(){    
+			 var layer = layui.layer;
+	})
+var json;
+var json1;	
+var pagination = document.getElementById("pagination");
+var table1 = document.getElementById("table1");
+var changecolor = 0;
+	function sms(){
+$.ajax({
+	type:"post",
+	url:"http://localhost/tp5/public/index.php/index/sms/send_ms",
+	dateType:"json",
+	data:new FormData(document.getElementById("sms")),
+	processData:false,
+	contentType:false,
+	success:function(data){
+			layer.alert(data, {
+			skin: 'layui-layer-molv' //样式类名
+			,closeBtn: 1
+			},);
+			$("#iphone").val("");
+			$("#content").val("");
+			add_sms();
+	},
+	error:function(jqXHR, textStatus, errorThrown){  
+				alert(jqXHR.responseText);
+				alert(jqXHR.status);
+				alert(jqXHR.readyState);
+				alert(jqXHR.statusText);
+				alert(textStatus);
+				alert(errorThrown); 
+		}
+})
+}
+function add_sms(){
+$.ajax({
+	type:"post",
+	url:"http://localhost/tp5/public/index.php/index/getinfo/r_sms",
+	dateType:"json",
+	success:function(data){
+		//alert(data);
+		json1 = JSON.parse(data);
+		json  = json1.reverse();
+		var number = counti(json)/10;
+		var number1 = counti(json)%10;
+		if(number1 == 0){
+			var j = number;
+		//	var jp = parseInt(number);
+		//var j = jp+1;
+		pagination.innerHTML="";
+		for(var m=0;m<j;m++){
+			var button = document.createElement("button");
+			var o = m+1;
+			button.innerHTML = o;
+			button.setAttribute("onclick","newpage(\""+o+"\")");
+			pagination.appendChild(button);
+		}
+		table1.innerHTML = "<tr><th>时间</th><th>内容</th><th>接收手机号</th><th>操作</th></tr>";
+		//alert(123);
+		for(var i=0;i<10;i++)
+		{
+			if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+		}
+		}else{
+		var jp = parseInt(number);
+		var j = jp+1;
+		pagination.innerHTML="";
+		for(var m=0;m<j;m++){
+			var button = document.createElement("button");
+			var o = m+1;
+			button.innerHTML = o;
+			button.setAttribute("onclick","newpage(\""+o+"\")");
+			pagination.appendChild(button);
+		}
+		table1.innerHTML = "<tr><th>时间</th><th>内容</th><th>接收手机号</th><th>操作</th></tr>";
+		//alert(123);
+		for(var i=0;i<10;i++)
+		{
+			//alert(json[i].name);
+			if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+		}
+		}
+	
+	},
+
+})
+}
+
+
+
+function newpage(page)
+{
+$.ajax({
+type:"post",
+	url:"http://localhost/tp5/public/index.php/index/getinfo/r_sms",
+	dateType:"json",
+	success:function(data){
+		json1 = JSON.parse(data);
+		json  = json1.reverse();
+		var number = counti(json)%10;
+		var number2 = counti(json)/10;
+		var number1 = parseInt(number2);
+		var number3 = number1+1;
+		if(number == 0){
+			if(page == number2){
+				table1.innerHTML = "<tr><th>时间</th><th>内容</th><th>接收手机号</th><th>操作</th></tr>";
+				for(var i=(page-1)*10;i<page*10;i++)
+						{
+							if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+									}
+			}else{
+				table1.innerHTML = "<tr><th>时间</th><th>内容</th><th>接收手机号</th><th>操作</th></tr>";
+				for(var i=(page-1)*10;i<page*10;i++)
+						{
+							if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+			}
+		}					}
+		else{
+			if(page == number3){					
+				table1.innerHTML = "<tr><th>时间</th><th>内容</th><th>接收手机号</th><th>操作</th></tr>";
+				for(var i=(page-1)*10;i<(page-1)*10+number;i++)
+						{
+							if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+						}
+			}else{
+				table1.innerHTML = "<tr><th>时间</th><th>内容</th><th>接收手机号</th><th>操作</th></tr>";
+				for(var i=(page-1)*10;i<page*10;i++)
+						{
+							if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td><td><img src=\"images/list_07.png\" width=\"22\" height=\"22\" /></td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+						}
+			}
+		}
+	},
+})
+
+
+}
+
+
+
+
+$(document).ready(function(){
+$("#table1").on("mouseover mouseout",".changecolor",function(event){
+	if(event.type == "mouseover"){
+		oldColor=this.style.background;
+		this.style.background='#dff0d8';
+	 }else if(event.type == "mouseout"){
+		this.style.background=oldColor;
+	}
+})
+$("#table2").on("mouseover mouseout",".changecolor",function(event){
+	if(event.type == "mouseover"){
+		oldColor=this.style.background;
+		this.style.background='#dff0d8';
+	 }else if(event.type == "mouseout"){
+		this.style.background=oldColor;
+	}
+})
+});
+	var oldColor='';
+	//var oTab=document.getElementById('tab1')
+function toColor(tableID)
+{
+		var oTab=document.getElementById(tableID)
+	
+		 for(var i=0;i<oTab.tBodies[0].rows.length;i++)
+	 //隔行变色
+	 {    
+				 oTab.tBodies[0].rows[i].onmouseover=function()
+				 {  //鼠标移入变色
+			
+					 oldColor=this.style.background;
+					 this.style.background='#dff0d8';
+				 };
+				 oTab.tBodies[0].rows[i].onmouseout=function()
+				 {   //鼠标移出恢复原来颜色
+					 this.style.background=oldColor;
+				 }
+		
+		if(i%2){
+					 oTab.tBodies[0].rows[i].style.background='';
+				 }
+				 else
+				 {
+					 oTab.tBodies[0].rows[i].style.background='#F2F2F2';
+				 } 
+
+	 }
+}
+	</script>

@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>国家电网苏通GIL管廊运输、施工车辆防碰撞系统</title>
+<link href="css/style1.css" rel="stylesheet" type="text/css" />
+<script src="layui-v2.2.6/layui-v2.2.6/layui/layui.js" type="text/javascript" charset="utf-8"></script>  
+<script type="text/javascript" src="js/jquery-1.8.3.min.js" charset="utf-8"></script>
+<!--显示当前时间-->
+<script type="text/javascript">  
+var days=new  Array ("日", "一", "二", "三", "四", "五", "六");  
+function showDT() {  
+  var currentDT = new Date();  
+  var y,m,date,day,hs,ms,ss,theDateStr;  
+  y = currentDT.getFullYear(); //四位整数表示的年份  
+  m = currentDT.getMonth()+1; //月  
+  date = currentDT.getDate(); //日  
+  day = currentDT.getDay(); //星期  
+  hs = "0"+currentDT.getHours(); //时  
+  ms = "0"+currentDT.getMinutes(); //分  
+  ss = "0"+currentDT.getSeconds(); //秒  
+  theDateStr = y+"年"+  m +"月"+date+"日<br><span>"+hs.slice(-2)+":"+ms.slice(-2)+":"+ss.slice(-2)+"</span>";  
+  document.getElementById("theClock"). innerHTML =theDateStr;  
+  // setTimeout 在执行时,是在载入后延迟指定时间后,去执行一次表达式,仅执行一次  
+  window.setTimeout( showDT, 1000);  
+}  
+</script>  
+
+<!--TAB切换-->
+<script type="text/javascript" src="js/ntab.js"></script>
+</head>
+<body onload="showDT();add_sms()">
+<div class="header">
+	<div class="logo">
+		<img src="images/index_03.png" />
+	</div>
+	
+	<div class="menu">
+		<ul>
+			<li><a href="javascript:quanxian(0)" class="a1">实时监控 </a></li>
+			<li><a href="javascript:quanxian(1)" class="a2" >历史运行记录 </a></li>
+			<li><a href="javascript:quanxian(2)" class="a3hover">短信信息记录 </a></li>
+			<li><a href="javascript:quanxian(3)" class="a4">系统配置 </a></li>
+			<li><a href="javascript:quanxian(4)" class="a5">资源调度</a></li>
+		</ul>
+	</div>
+	
+	<div class="nav" id="theClock">
+	
+	</div>
+</div>
+
+<div class="main_list">
+	<div class="nTab2">
+			<!-- 标题开始 -->
+			<div class="TabTitle">
+			  <ul id="myTab1">
+				<li class="active" onclick="nTabs(this,0);">发送短信</li>
+				
+			  </ul>
+			</div>
+			<!-- 内容开始 -->
+			<div class="TabContent">
+				<form  id="sms">
+				<div id="myTab1_Content0" style="display: block;">
+				<div class="myform">					
+					<ul>
+						<li style="margin-top: 40px; ">
+							<b>手机号</b>
+							<p><input id="iphone" name="iphone" type="text" class="inp sj" required="required"/></p>
+						</li>	
+						<li style="margin-top:80px;">
+							<b>内容</b>
+							<p><input id="content" name="content" type="text" class="inp"/></p>
+						</li>
+						<h1 style="margin-bottom: 150px;"><input type="button" value="发送" class="button" onclick="javascript:send_sms()"/></h1>
+					</ul>
+				</div>			
+			  </div>
+			</form> 
+			</div>
+		  </div>
+	
+	<div class="list_right">
+		<div class="nTab3">
+			<!-- 标题开始 -->
+			<div class="TabTitle">
+			  <ul id="myTab2">
+				<li class="active" onclick="nTabs(this,0);">短信记录</li>
+			  </ul>
+			</div>
+			<!-- 内容开始 -->
+			<div class="TabContent">
+			  <div id="myTab2_Content0" style="display: block;">
+			  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="table1" class="table1">
+                <tr>
+                  <th>日期</th>
+                  <th>内容</th>
+                  <th>手机号</th>
+                  
+                </tr>
+				        <tr>
+                  <td>于丽娜</td>
+                  <td>秘书</td>
+                  <td>13523654789</td>
+                </tr>
+							</table>
+							<div style="line-height:40px;overflow:auto;text-align:center;margin-top: 10px" id="pagination" class="one"><button > 1</button><button >2</button></div>						
+			  <script type="text/javascript">
+			  var oldColor='';
+				var json;
+				var json1;	
+				var pagination = document.getElementById("pagination");
+				var table1 = document.getElementById("table1");
+				var changecolor = 0;
+				layui.use('layer', function(){    
+             var layer = layui.layer;
+        })
+				function counti(json)
+				{
+					var jsonLength=0;
+					for (var i in json) 
+					{
+							jsonLength++;
+					}
+					return jsonLength; 
+					}
+
+
+					layui.use('layer', function()
+					{    
+			      var layer = layui.layer;
+	        })
+
+				//短信表单提交
+				function send_sms()
+				{
+  									$.ajax({
+										type:"post",
+										url:"http://localhost/tp5/public/index.php/index/sms/send_sms",
+										dateType:"json",
+										data:new FormData(document.getElementById("sms")),
+										processData:false,
+										contentType:false,
+										success:function(data){
+												layer.alert(data, {
+												skin: 'layui-layer-molv' //样式类名
+												,closeBtn: 1
+												},);
+												$("#iphone").val("");
+												$("#content").val("");
+												add_sms();
+										},
+										error:function(jqXHR, textStatus, errorThrown){  
+													alert(jqXHR.responseText);
+													alert(jqXHR.status);
+													alert(jqXHR.readyState);
+													alert(jqXHR.statusText);
+													alert(textStatus);
+													alert(errorThrown); 
+											}
+									})
+					}
+
+
+				//首页以及按钮添加
+				function add_sms(){
+        $.ajax({
+	        type:"post",
+	        url:"http://localhost/tp5/public/index.php/index/getinfo/r_sms",
+	        dateType:"json",
+	        success:function(data)
+        {
+		//alert(data);
+		    json1 = JSON.parse(data);
+		    json  = json1.reverse();
+		    var number = counti(json)/10;
+		    var number1 = counti(json)%10;
+		    if(number1 == 0){
+			var j = number;
+		//	var jp = parseInt(number);
+		//var j = jp+1;
+		    pagination.innerHTML="";
+		    for(var m=0;m<j;m++)
+            {
+			var button = document.createElement("button");
+			var o = m+1;
+			button.innerHTML = o;
+			button.setAttribute("onclick","newpage(\""+o+"\")");
+			pagination.appendChild(button);
+		    }
+		table1.innerHTML = "<tr><th>日期</th><th>内容</th><th>接收手机号</th></tr>";
+		//alert(123);
+		for(var i=0;i<10;i++)
+		{
+			if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+		}
+		}else{
+		var jp = parseInt(number);
+		var j = jp+1;
+		pagination.innerHTML="";
+		for(var m=0;m<j;m++){
+			var button = document.createElement("button");
+			var o = m+1;
+			button.innerHTML = o;
+			button.setAttribute("onclick","newpage(\""+o+"\")");
+			pagination.appendChild(button);
+		}
+		table1.innerHTML = "<tr><th>日期</th><th>内容</th><th>接收手机号</th></tr>";
+		//alert(123);
+		for(var i=0;i<10;i++)
+		{
+			//alert(json[i].name);
+			if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+		}
+		}
+	
+	},
+
+})
+}
+
+//分页触发事件
+function newpage(page)
+{
+$.ajax({
+type:"post",
+	url:"http://localhost/tp5/public/index.php/index/getinfo/r_sms",
+	dateType:"json",
+	success:function(data){
+		json1 = JSON.parse(data);
+		json  = json1.reverse();
+		var number = counti(json)%10;
+		var number2 = counti(json)/10;
+		var number1 = parseInt(number2);
+		var number3 = number1+1;
+		if(number == 0){
+			if(page == number2){
+				table1.innerHTML = "<tr><th>日期</th><th>内容</th><th>接收手机号</th></tr>";
+				for(var i=(page-1)*10;i<page*10;i++)
+						{
+							if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+									}
+			}else{
+				table1.innerHTML = "<tr><th>日期</th><th>内容</th><th>接收手机号</th></tr>";
+				for(var i=(page-1)*10;i<page*10;i++)
+						{
+							if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+			}
+		}					}
+		else{
+			if(page == number3){					
+				table1.innerHTML = "<tr><th>日期</th><th>内容</th><th>接收手机号</th></tr>";
+				for(var i=(page-1)*10;i<(page-1)*10+number;i++)
+						{
+							if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+						}
+			}else{
+				table1.innerHTML = "<tr><th>日期</th><th>内容</th><th>接收手机号</th></tr>";
+				for(var i=(page-1)*10;i<page*10;i++)
+						{
+							if(changecolor==0)
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#F2F2F2");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=1;
+							}
+							else
+							{
+								var tr = document.createElement("tr");
+								tr.innerHTML = "<td>"+json[i].time+"</td><td>"+json[i].json+"</td><td>"+json[i].iphone+"</td>";
+								tr.setAttribute("style","background:#fff");
+								tr.setAttribute("class","changecolor");
+								table1.appendChild(tr);
+								changecolor=0;
+							}
+						}
+			}
+		}
+	},
+})
+
+
+}
+
+
+				//var oTab=document.getElementById('tab1')
+		function toColor(tableID)
+		{
+			    var oTab=document.getElementById(tableID)
+				
+			   	for(var i=0;i<oTab.tBodies[0].rows.length;i++)
+			   //隔行变色
+			   {    
+			   	    oTab.tBodies[0].rows[i].onmouseover=function()
+			   	    {  //鼠标移入变色
+						
+			   	    	oldColor=this.style.background;
+			   	    	this.style.background='#dff0d8';
+			   	    };
+			   	    oTab.tBodies[0].rows[i].onmouseout=function()
+			   	    {   //鼠标移出恢复原来颜色
+			   	    	this.style.background=oldColor;
+			   	    }
+					
+					if(i%2){
+			   	    	oTab.tBodies[0].rows[i].style.background='';
+			   	    }
+			   	    else
+			   	    {
+			   	    	oTab.tBodies[0].rows[i].style.background='#F2F2F2';
+			   	    } 
+
+			   }
+		}
+
+		function quanxian(g)
+{
+    var member;
+    $.ajax({
+        url:"http://localhost/tp5/public/index.php/index/getinfo/a_auth",
+        type:"post",
+        dataType: "text",
+        success: function(data,status){//如果调用php成功   
+            member = data;
+            switch(member)
+            {
+                case "巡视人员":
+                    if(g==0)
+                    {
+                        window.location.href = "../gil/index.html";
+                    }
+                    else
+                    {
+                        layer.alert("权限不足",{skin:'layui-layer-molv',closeBtn:1},);
+                    }
+                    break;
+                case "管理维护人员":
+                    if(g==0)
+                    {
+                        window.location.href = "../gil/index.html";
+                    }
+                    else if(g==3)
+                    {
+                        window.location.href = "../gil/list.html";
+                    }
+                    else
+                    {
+                        layer.alert("权限不足",{skin:'layui-layer-molv',closeBtn:1},);
+                    }
+                    break;
+                case "数据处理人员":
+                    if(g==1)  
+                    {
+                        window.location.href = "../gil/history.html";
+                    }      
+                    else if(g==2)
+                    {
+                        window.location.href = "../gil/sms.html";
+                    }
+                    else if(g==3)
+                    {
+                        window.location.href = "../gil/list.html";
+                    }
+                    else
+                    {
+                        layer.alert("权限不足",{skin:'layui-layer-molv',closeBtn:1},);
+                    }
+                    break;
+                case "领导":
+                    if(g==0)
+                    {
+                        window.location.href = "../gil/index.html";
+                    }
+                    else if(g==1)  
+                    {
+                        window.location.href = "../gil/history.html";
+                    }      
+                    else if(g==2)
+                    {
+                        window.location.href = "../gil/sms.html";
+                    }
+                    else if(g==3)
+                    {
+                        window.location.href = "../gil/list.html";
+                    }
+                    else if(g==4)
+                    {
+                        window.location.href = "../gil/ziyuan.html";
+                    }
+                    else
+                    {
+                        layer.alert("权限不足",{skin:'layui-layer-molv',closeBtn:1},);
+                    }    
+                    break;
+                default:
+                    break;   
+            }
+        }
+    });    
+}
+
+			  </script>
+			  </div>
+			  
+			</div>
+		  </div>
+	</div>
+</div>
+</body>
+</html>
